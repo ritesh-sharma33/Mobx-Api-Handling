@@ -8,7 +8,6 @@ class UserStore = _UserStore with _$UserStore;
 
 abstract class _UserStore with Store {
   final NetworkService httpClient = NetworkService();
-  List<User> users = List();
 
   @observable
   ObservableFuture<List<User>> userListFuture;
@@ -18,8 +17,8 @@ abstract class _UserStore with Store {
           .getData('https://reqres.in/api/users?page=1')
           .then((users) => users));
 
+
   void getTheUsers() {
     fetchUsers();
-    print(users);
   }
 }
