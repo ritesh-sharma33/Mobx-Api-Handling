@@ -27,11 +27,44 @@ class _HomePageState extends State<HomePage> {
       body: Observer(
         builder: (_) {
           final future = store.userListFuture;
-
           switch (future.status) {
             case FutureStatus.pending:
               return Center(
                 child: CircularProgressIndicator(),
+              );
+            case FutureStatus.fulfilled:
+              final List<User> users = future.result;
+              print(users);
+              return RefreshIndicator(
+                onRefresh: _refresh,
+                child: ListView.builder(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  itemCount: users.length,
+                  itemBuilder: (context, index) {
+                    final user = users[index];
+                    return ListTile(
+                      leading: CircleAvatar(
+                        backgroundImage: NetworkImage(user.avatar),
+                        radius: 25,
+                      ),
+                      title: Text(
+                        user.name,
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        user.email,
+                        style: TextStyle(
+                            color: Colors.black, fontWeight: FontWeight.w400),
+                      ),
+                      trailing: Text(
+                        user.id,
+                        style: TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 20),
+                      ),
+                    );
+                  },
+                ),
               );
             case FutureStatus.rejected:
               return Center(
@@ -42,7 +75,9 @@ class _HomePageState extends State<HomePage> {
                       'Failed to load items.',
                       style: TextStyle(color: Colors.red),
                     ),
-                    SizedBox(height: 10,),
+                    SizedBox(
+                      height: 10,
+                    ),
                     RaisedButton(
                       child: const Text('Tap to retry'),
                       onPressed: _refresh,
@@ -50,50 +85,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               );
-            case FutureStatus.fulfilled:
-              final List<User> users = future.result;
-              return RefreshIndicator(
-                onRefresh: _refresh,
-                child: ListView.builder(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  itemCount: users.length,
-                  itemBuilder: (context, index) {
-                    final user = users[index];
-                    return ListTile(
-                      leading: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: DecorationImage(
-                            image: NetworkImage(user.avatar),
-                            fit: BoxFit.cover
-                          )
-                        ),
-                      ),
-                      title: Text(
-                        user.name,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      subtitle: Text(
-                        user.email,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      trailing: Text(
-                        user.id,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          fontSize: 20
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              );
+              break;
           }
         },
       ),
