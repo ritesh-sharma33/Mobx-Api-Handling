@@ -10,7 +10,7 @@ class User {
       email: json['email'].toString(),
       avatar: json['avatar'].toString(),
       id: json['id'].toString(),
-      followers: json['id'] * 90
+      followers: json['id']
     );
   }
 

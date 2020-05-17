@@ -32,7 +32,7 @@ class NetworkService {
       }).toList();
       return posts;
     } else {
-      print("Error");
+      print("Error in URL");
     }
   }
 }
